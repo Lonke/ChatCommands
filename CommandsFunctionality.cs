@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using ChatCommands.Utilities;
+using Photon.Pun;
 
 namespace ChatCommands
 {
@@ -33,39 +35,42 @@ namespace ChatCommands
 					ModdingUtils.Utils.Cards.instance.RemoveAllCardsFromPlayer(player);
 					UnityEngine.Debug.Log("Reset Cards Called");
 					break;
+				case "!resetbots":
 				case "!kickbots":
+				case "!nobots":
                     RemoveBots();
                     break;
 				case "!resetplayers":
 				case "!kickplayers":
-				case "!nobots":
-					RemoveBots();
+				case "!kickall":
+					PlayerManager.instance.RemovePlayers();
 					break;
-				case "!hp":
-					player.data.health = arg2AsFloat;
-					break;
-				
-					
 			}
 
 			if (args.Length != 2) return;
 
 			if (!float.TryParse(args[1], out var arg2AsFloat)) return;
 
-			if (args[0] == "!hp")
-				player.data.health = arg2AsFloat;
-
+			player.data.health = args[0] switch
+			{
+				"!hp" => arg2AsFloat,
+				_ => player.data.health
+			};
 		}	
 		
 		private static void RemoveBots()
 		{
-        	    foreach (Player player in PlayerManager.instance.players) /* scyye is cool */
-	            {
-                	if (player.data.view.OwnerActorNr == PhotonNetwork.MasterClient.ActorNumber)
-                	{
-                    		PlayerManager.instance.RemovePlayer(player);
-                	}
-            	    }
-        	}		
+			Player localPlayer = ChatCMDModUtilities.GetLocalPlayer();
+
+			for (var i = PlayerManager.instance.players.Count - 1; i >= 0; i--)
+			{
+				var player = PlayerManager.instance.players[i];
+				
+				if (player == localPlayer) return;
+
+				PlayerAssigner.instance.players.Remove(player.data);
+				PlayerManager.instance.RemovePlayer(player);
+			}
+		}		
 	}
 }
