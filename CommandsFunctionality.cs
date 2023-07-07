@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using ChatCommands.Utilities;
-using Photon.Pun;
 
 namespace ChatCommands
 {
