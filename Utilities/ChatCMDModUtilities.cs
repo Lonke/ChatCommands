@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using JetBrains.Annotations;
+using Photon.Pun;
 
 namespace ChatCommands.Utilities
 {
@@ -25,24 +26,7 @@ namespace ChatCommands.Utilities
 
 	public class ChatCMDModUtilities
 	{
-#pragma warning disable CS0169
-		private static Assembly? _mscorLib;
-
-		// mscorlib singleton for late-binding
-		public static Assembly mscorlib
-		{
-			get
-			{
-				if (_mscorLib == null)
-				{
-					_mscorLib = Assembly.Load("mscorlib.dll");
-					return _mscorLib;
-				}
-				else
-					return _mscorLib;
-			}
-		}
-
+		public static Player GetLocalPlayer() => ChatCMDModUtilities.GetPlayerWithActorID(PhotonNetwork.LocalPlayer.ActorNumber);
 
 		public static Player GetPlayerWithActorID(int actorID)
 		{
@@ -69,7 +53,7 @@ namespace ChatCommands.Utilities
 					sbCurrentBuffer.Append(c);
 				else
 				{
-					splitStrings.Add( sbCurrentBuffer.ToString() );
+					splitStrings.Add(sbCurrentBuffer.ToString());
 					sbCurrentBuffer.Clear();
 				}
 			}
