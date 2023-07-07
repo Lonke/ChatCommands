@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using ChatCommands.Utilities;
-
 namespace ChatCommands
 {
 	internal class CommandsFunctionality
@@ -20,40 +19,50 @@ namespace ChatCommands
 				UnityEngine.Debug.Log($"[{nameof(OnChatSendCmd)}] arg {i}: {args[i]}");	
 			}
 
-
-			if (args.Length != 1) return;
-
-			switch (args[0])
+			switch (args)
 			{
-				case "!reset": // cards + players
-					PlayerManager.instance.RemovePlayers();
-					ModdingUtils.Utils.Cards.instance.RemoveAllCardsFromPlayer(player);
+				case { Length: 1 }: // 1 argument
+					switch (args[0])
+					{
+						case "!reset": // cards + players
+							PlayerManager.instance.RemovePlayers();
+							ModdingUtils.Utils.Cards.instance.RemoveAllCardsFromPlayer(player);
+							break;
+						case "!resetcards":
+							ModdingUtils.Utils.Cards.instance.RemoveAllCardsFromPlayer(player);
+							UnityEngine.Debug.Log("Reset Cards Called");
+							break;
+						case "!resetbots":
+						case "!kickbots":
+						case "!nobots":
+							RemoveBots();
+							break;
+						case "!resetplayers":
+						case "!kickplayers":
+						case "!kickall":
+							PlayerManager.instance.RemovePlayers();
+							break;
+						//case "!getres":
+						//player.data.stats.
+						//break;
+					}
 					break;
-				case "!resetcards":
-					ModdingUtils.Utils.Cards.instance.RemoveAllCardsFromPlayer(player);
-					UnityEngine.Debug.Log("Reset Cards Called");
-					break;
-				case "!resetbots":
-				case "!kickbots":
-				case "!nobots":
-                    RemoveBots();
-                    break;
-				case "!resetplayers":
-				case "!kickplayers":
-				case "!kickall":
-					PlayerManager.instance.RemovePlayers();
+				case { Length: 2 }: // 2 arguments
+					if (!float.TryParse(args[1], out var arg2AsFloat)) break;
+					switch (args[0])
+					{
+						case "!hp":
+							player.data.health = arg2AsFloat;
+							break;
+						case "!hpm":
+						case "!hpmax":
+						case "!maxhp":
+							player.data.maxHealth = arg2AsFloat;
+							break;
+					}
+
 					break;
 			}
-
-			if (args.Length != 2) return;
-
-			if (!float.TryParse(args[1], out var arg2AsFloat)) return;
-
-			player.data.health = args[0] switch
-			{
-				"!hp" => arg2AsFloat,
-				_ => player.data.health
-			};
 		}	
 		
 		private static void RemoveBots()
