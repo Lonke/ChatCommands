@@ -23,10 +23,22 @@ namespace ChatCommands
 
 			if (args.Length != 1) return;
 
-			if (args[0] == "!resetcards")
+			switch (args[0])
 			{
-				ModdingUtils.Utils.Cards.instance.RemoveAllCardsFromPlayer(player);
-				UnityEngine.Debug.Log("Reset Cards Called");
+				case "!reset": // cards + players
+					PlayerManager.instance.RemovePlayers();
+					ModdingUtils.Utils.Cards.instance.RemoveAllCardsFromPlayer(player);
+					break;
+				case "!resetcards":
+					ModdingUtils.Utils.Cards.instance.RemoveAllCardsFromPlayer(player);
+					UnityEngine.Debug.Log("Reset Cards Called");
+					break;
+				case "!kickbots":
+				case "!resetplayers":
+				case "!kickplayers":
+				case "!nobots":
+					PlayerManager.instance.RemovePlayers();
+					break;
 			}
 
 			if (args.Length != 2) return;
