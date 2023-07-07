@@ -34,11 +34,18 @@ namespace ChatCommands
 					UnityEngine.Debug.Log("Reset Cards Called");
 					break;
 				case "!kickbots":
+                    RemoveBots();
+                    break;
 				case "!resetplayers":
 				case "!kickplayers":
 				case "!nobots":
-					PlayerManager.instance.RemovePlayers();
+					RemoveBots();
 					break;
+				case "!hp":
+					player.data.health = arg2AsFloat;
+					break;
+				
+					
 			}
 
 			if (args.Length != 2) return;
@@ -48,7 +55,17 @@ namespace ChatCommands
 			if (args[0] == "!hp")
 				player.data.health = arg2AsFloat;
 
-		}
-
+		}	
+		
+		private static void RemoveBots()
+		{
+        	    foreach (Player player in PlayerManager.instance.players) /* scyye is cool */
+	            {
+                	if (player.data.view.OwnerActorNr == PhotonNetwork.MasterClient.ActorNumber)
+                	{
+                    		PlayerManager.instance.RemovePlayer(player);
+                	}
+            	    }
+        	}		
 	}
 }
